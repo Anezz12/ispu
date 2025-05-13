@@ -5,6 +5,7 @@ import Link from 'next/link';
 const Navbar: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState('/');
 
   // Handle scroll effect
   useEffect(() => {
@@ -14,6 +15,33 @@ const Navbar: React.FC = () => {
         setIsScrolled(true);
       } else {
         setIsScrolled(false);
+      }
+
+      // Update active section based on scroll position
+      const sections = [
+        { id: 'info-section', href: '#info-section' },
+        { id: 'prediction-form', href: '#prediction-form' },
+        { id: 'indeks-ispu', href: '#indeks-ispu' },
+        { id: 'faq', href: '#faq' },
+      ];
+
+      // Check if we're at the top of the page
+      if (window.scrollY < 100) {
+        setActiveSection('/');
+        return;
+      }
+
+      // Find the current section
+      for (const section of sections) {
+        const element = document.getElementById(section.id);
+        if (element) {
+          const rect = element.getBoundingClientRect();
+          // If the section is in view
+          if (rect.top <= 100 && rect.bottom >= 100) {
+            setActiveSection(section.href);
+            return;
+          }
+        }
       }
     };
 
@@ -85,13 +113,22 @@ const Navbar: React.FC = () => {
                 href={link.href}
                 className={`relative px-3 py-2 font-medium text-base transition duration-300 ${
                   isScrolled
-                    ? 'text-gray-700 hover:text-blue-600'
+                    ? activeSection === link.href
+                      ? 'text-blue-600'
+                      : 'text-gray-700 hover:text-blue-600'
+                    : activeSection === link.href
+                    ? 'text-yellow-300'
                     : 'text-white hover:text-yellow-300'
                 } group`}
+                onClick={() => setActiveSection(link.href)}
               >
                 {link.name}
                 <span
-                  className={`absolute bottom-0 left-0 w-full h-0.5 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ${
+                  className={`absolute bottom-0 left-0 w-full h-0.5 transform ${
+                    activeSection === link.href
+                      ? 'scale-x-100'
+                      : 'scale-x-0 group-hover:scale-x-100'
+                  } transition-transform duration-300 ${
                     isScrolled ? 'bg-blue-600' : 'bg-yellow-300'
                   }`}
                 ></span>
@@ -104,6 +141,7 @@ const Navbar: React.FC = () => {
                   ? 'bg-blue-600 text-white hover:bg-blue-700'
                   : 'bg-white text-blue-600 hover:bg-yellow-300 hover:text-blue-800'
               }`}
+              onClick={() => setActiveSection('#prediction-form')}
             >
               Cek Sekarang
             </Link>
@@ -164,8 +202,16 @@ const Navbar: React.FC = () => {
               <Link
                 key={link.name}
                 href={link.href}
-                className="block px-4 py-3 rounded-md text-base font-medium transition-colors duration-200 text-gray-700 hover:text-blue-600 hover:bg-blue-50"
-                onClick={() => setMobileMenuOpen(false)}
+                className={`block px-4 py-3 rounded-md text-base font-medium transition-colors duration-200 
+                  ${
+                    activeSection === link.href
+                      ? 'text-blue-600 bg-blue-50'
+                      : 'text-gray-700 hover:text-blue-600 hover:bg-blue-50'
+                  }`}
+                onClick={() => {
+                  setActiveSection(link.href);
+                  setMobileMenuOpen(false);
+                }}
               >
                 {link.name}
               </Link>
@@ -174,7 +220,10 @@ const Navbar: React.FC = () => {
               <Link
                 href="#prediction-form"
                 className="block w-full px-4 py-3 rounded-md text-base font-medium bg-blue-600 text-white hover:bg-blue-700 text-center transition-colors duration-200"
-                onClick={() => setMobileMenuOpen(false)}
+                onClick={() => {
+                  setActiveSection('#prediction-form');
+                  setMobileMenuOpen(false);
+                }}
               >
                 Cek Sekarang
               </Link>
