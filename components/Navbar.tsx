@@ -31,7 +31,7 @@ const Navbar: React.FC = () => {
     { name: 'Home', href: '/' },
     { name: 'Info', href: '#info-section' },
     { name: 'Prediksi', href: '#prediction-form' },
-    { name: 'Kontak', href: '#contact' },
+    { name: 'Faq', href: '#faq' },
   ];
 
   return (

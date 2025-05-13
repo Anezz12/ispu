@@ -1,4 +1,3 @@
-// filepath: air-quality-prediction/types/index.ts
 export interface FormValues {
   pm_sepuluh: string;
   pm_duakomalima: string;
